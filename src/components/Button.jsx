@@ -3,9 +3,11 @@ import firebase from "../controller/firebase"
 import { getDatabase, ref, set, onValue } from "firebase/database";
 const db = getDatabase();
 const watchPos = ref(db, 'p1');
-var currentPos = 0;
+var currentPosX = 0;
+var currentPosY = 0;
 onValue(watchPos, (snapshot) => {
-    currentPos = parseInt(snapshot.val().x.replace("px", ""))
+    currentPosX = parseInt(snapshot.val().x.replace("px", ""))
+    currentPosY = parseInt(snapshot.val().y.replace("px", ""))
 })
 
 
@@ -13,16 +15,29 @@ function move(direction, step){
     switch(direction){
         case 'Left':
             set(ref(db, 'p1'), {
-                x: (currentPos+step)+"px"
+                x: (currentPosX+step)+"px",
+                y: (currentPosY)+"px"
             })
-            console.log('Left!')
             break;
         case 'Right':
             set(ref(db, 'p1'), {
-                x: (currentPos-step)+"px"
+                x: (currentPosX-step)+"px",
+                y: (currentPosY)+"px"
             })
-            console.log('Right!')
             break
+        case 'Up':
+        set(ref(db, 'p1'), {
+            x: (currentPosX)+"px",
+            y: (currentPosY-step)+"px"
+        })
+        break
+
+        case 'Down':
+        set(ref(db, 'p1'), {
+            x: (currentPosX)+"px",
+            y: (currentPosY+step)+"px"
+        })
+        break
     }
 }
 
